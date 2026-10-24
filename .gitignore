@@ -1,0 +1,17 @@
+# Local agent / editor state — not part of the extension
+.workbuddy-ai/
+.vscode/
+.idea/
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Packaged releases belong in GitHub Releases, not in the tree
+*.zip
+*.crx
+*.pem
+
+# Node (the project itself has zero dependencies; this is for ad-hoc tooling)
+node_modules/

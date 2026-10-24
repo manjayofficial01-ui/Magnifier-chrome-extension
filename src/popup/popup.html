@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lumina Magnifier</title>
+  <link rel="stylesheet" href="../shared/theme.css" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="head">
+      <div class="brand">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none">
+            <defs>
+              <linearGradient id="lg" x1="8" y1="6" x2="40" y2="42" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#8B9CF9" />
+                <stop offset="0.55" stop-color="#C084FC" />
+                <stop offset="1" stop-color="#67E8F9" />
+              </linearGradient>
+              <radialGradient id="gg" cx="0.35" cy="0.3" r="0.9">
+                <stop stop-color="#818CF8" stop-opacity="0.35" />
+                <stop offset="1" stop-color="#0C0F1C" stop-opacity="0.9" />
+              </radialGradient>
+            </defs>
+            <circle cx="21" cy="21" r="13" fill="url(#gg)" stroke="url(#lg)" stroke-width="3.4" />
+            <path d="M31 31 L41 41" stroke="url(#lg)" stroke-width="4.6" stroke-linecap="round" />
+            <path d="M13.5 15.5 A 9.5 9.5 0 0 1 21 11.5" stroke="#fff" stroke-opacity="0.75" stroke-width="2.2" stroke-linecap="round" />
+          </svg>
+        </span>
+        <div class="brand-txt">
+          <h1>Lumina Magnifier</h1>
+          <p>Read the fine print, anywhere</p>
+        </div>
+      </div>
+      <label class="switch" title="Toggle magnifier">
+        <input type="checkbox" id="power" aria-label="Toggle magnifier on this tab" />
+        <span class="track"><span class="knob"></span></span>
+      </label>
+    </header>
+
+    <div class="status" id="status" role="status">
+      <span class="dot"></span>
+      <span class="status-txt" id="statusTxt">Checking this tab…</span>
+    </div>
+
+    <!-- Zoom is the one control people touch constantly: never collapse it. -->
+    <section class="card">
+      <div class="row-head">
+        <label class="lbl" for="zoom">Zoom</label>
+        <span class="inline">
+          <input type="number" id="zoomNum" aria-label="Zoom percent" />
+          <span class="unit">%</span>
+        </span>
+      </div>
+      <input type="range" id="zoom" />
+      <div class="chips" id="zoomChips"></div>
+    </section>
+
+    <details class="sec" open>
+      <summary><span class="lbl">Lens</span><span class="sum-val" id="lensSum">Circle · 240 px</span></summary>
+      <div class="sec-body">
+        <div class="shapes" id="shapes">
+          <button class="shape" data-shape="circle" title="Circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="7.5" /></svg>
+            <span>Circle</span>
+          </button>
+          <button class="shape" data-shape="square" title="Square">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5.5" y="5.5" width="13" height="13" rx="1.5" /></svg>
+            <span>Square</span>
+          </button>
+          <button class="shape" data-shape="rounded" title="Rounded square">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="5" width="14" height="14" rx="5.5" /></svg>
+            <span>Rounded</span>
+          </button>
+          <button class="shape" data-shape="rectangle" title="Wide rectangle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="7.5" width="18" height="9" rx="2.5" /></svg>
+            <span>Wide</span>
+          </button>
+        </div>
+
+        <div class="row-head mt">
+          <label class="lbl" for="lensSize">Size</label>
+          <span class="val" id="sizeVal">240 × 240</span>
+        </div>
+        <input type="range" id="lensSize" />
+        <div class="size-grid">
+          <label class="field">
+            <span>Width</span>
+            <span class="inline wide">
+              <input type="number" id="lensW" aria-label="Lens width in pixels" />
+              <span class="unit">px</span>
+            </span>
+          </label>
+          <label class="field">
+            <span>Height</span>
+            <span class="inline wide">
+              <input type="number" id="lensH" aria-label="Lens height in pixels, 0 for auto" />
+              <span class="unit">px</span>
+            </span>
+          </label>
+        </div>
+        <p class="hint-s">Height <b>0</b> = auto (square, or 1.6:1 for Wide).</p>
+
+        <div class="row-head mt"><span class="lbl">View</span></div>
+        <div class="seg" id="dockSeg" role="group" aria-label="Lens view">
+          <button data-dock="off">Floating</button>
+          <button data-dock="top">Dock top</button>
+          <button data-dock="bottom">Dock bottom</button>
+        </div>
+        <div class="row-head mt"><span class="lbl">Follow</span></div>
+        <div class="seg" id="followSeg" role="group" aria-label="What the lens follows">
+          <button data-follow="pointer">Pointer</button>
+          <button data-follow="caret">Caret</button>
+          <button data-follow="focus">Focus</button>
+        </div>
+      </div>
+    </details>
+
+    <!-- The reading aids: what turns a lens into a low-vision reading tool. -->
+    <details class="sec" open>
+      <summary><span class="lbl">Reading aids</span><span class="sum-val" id="aidSum">Off</span></summary>
+      <div class="sec-body">
+        <div class="toggles">
+          <button class="tog" id="guide">Guide</button>
+          <button class="tog" id="textBoostOn">Bold text</button>
+          <button class="tog" id="readingStrip">Strip</button>
+        </div>
+        <p class="hint-s">
+          <b>Guide</b> dims the page to one band. <b>Bold text</b> thickens faint strokes.
+          <b>Strip</b> reflows the text under the lens into a panel you can read aloud, sentence by sentence.
+        </p>
+
+        <details class="fine">
+          <summary>Fine-tune</summary>
+          <div class="slider-row">
+            <label class="mini-lbl" for="guideHeight">Band</label>
+            <input type="range" id="guideHeight" />
+            <span class="val-s" id="guideHeightVal">130</span>
+          </div>
+          <div class="slider-row">
+            <label class="mini-lbl" for="guideDim">Dim</label>
+            <input type="range" id="guideDim" />
+            <span class="val-s" id="guideDimVal">62</span>
+          </div>
+          <div class="slider-row">
+            <label class="mini-lbl" for="textBoost">Weight</label>
+            <input type="range" id="textBoost" />
+            <span class="val-s" id="textBoostVal">0</span>
+          </div>
+          <div class="slider-row">
+            <label class="mini-lbl" for="stripSize">Strip size</label>
+            <input type="range" id="stripSize" />
+            <span class="val-s" id="stripSizeVal">22</span>
+          </div>
+          <div class="slider-row">
+            <label class="mini-lbl" for="readRate">Read rate</label>
+            <input type="range" id="readRate" />
+            <span class="val-s" id="readRateVal">1×</span>
+          </div>
+          <div class="row-head mt"><span class="lbl">Strip theme</span></div>
+          <div class="seg themes" id="stripThemeSeg" role="group" aria-label="Reading strip theme">
+            <button data-theme="auto">Auto</button>
+            <button data-theme="paper">Paper</button>
+            <button data-theme="night">Night</button>
+            <button data-theme="yellow">Amber</button>
+            <button data-theme="mono">Mono</button>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <details class="sec">
+      <summary><span class="lbl">Presets &amp; enhance</span><span class="sum-val" id="presetVal">Default</span></summary>
+      <div class="sec-body">
+        <div class="chips presets" id="presets"></div>
+        <div class="row-head mt">
+          <span class="lbl">Enhance</span>
+          <button class="mini" id="resetEnh">Reset</button>
+        </div>
+        <div class="slider-row">
+          <label class="mini-lbl" for="brightness">Bright</label>
+          <input type="range" id="brightness" />
+          <span class="val-s" id="brightnessVal">100</span>
+        </div>
+        <div class="slider-row">
+          <label class="mini-lbl" for="contrast">Contrast</label>
+          <input type="range" id="contrast" />
+          <span class="val-s" id="contrastVal">100</span>
+        </div>
+        <div class="slider-row">
+          <label class="mini-lbl" for="saturation">Color</label>
+          <input type="range" id="saturation" />
+          <span class="val-s" id="saturationVal">100</span>
+        </div>
+        <div class="slider-row">
+          <label class="mini-lbl" for="sepia">Tint</label>
+          <input type="range" id="sepia" />
+          <span class="val-s" id="sepiaVal">0</span>
+        </div>
+        <div class="slider-row">
+          <label class="mini-lbl" for="hue">Hue</label>
+          <input type="range" id="hue" />
+          <span class="val-s" id="hueVal">0</span>
+        </div>
+        <div class="slider-row">
+          <label class="mini-lbl" for="sharpen">Sharpen</label>
+          <input type="range" id="sharpen" />
+          <span class="val-s" id="sharpenVal">0</span>
+        </div>
+        <div class="toggles">
+          <button class="tog" id="invert">Invert</button>
+          <button class="tog" id="grayscale">Grayscale</button>
+          <button class="tog" id="crosshair">Crosshair</button>
+          <button class="tog" id="pixelPerfect">Pixel-perfect</button>
+        </div>
+      </div>
+    </details>
+
+    <section class="card">
+      <label class="check">
+        <input type="checkbox" id="perSite" />
+        <span>Remember these settings for this site</span>
+      </label>
+      <button class="mini site-reset" id="resetSite" hidden>Reset this site</button>
+    </section>
+
+    <footer class="foot">
+      <button class="cta" id="openViewer">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <rect x="3" y="5" width="18" height="14" rx="3" />
+          <circle cx="9" cy="10.5" r="1.8" />
+          <path d="M3 16.5l4.8-4.2a1.6 1.6 0 0 1 2.2.06L14 16.2m-2.4-2.4l2.1-1.9a1.6 1.6 0 0 1 2.2.05L21 16.4" />
+        </svg>
+        Open Photo Magnifier
+      </button>
+      <details class="sec keys-sec">
+        <summary><span class="lbl">Keyboard shortcuts</span></summary>
+        <div class="keys">
+          <span><kbd>Alt</kbd><kbd>M</kbd> toggle</span>
+          <span><kbd>Alt</kbd> + scroll zoom</span>
+          <span><kbd>Alt</kbd><kbd>=</kbd>/<kbd>−</kbd> zoom</span>
+          <span><kbd>Alt</kbd><kbd>[</kbd><kbd>]</kbd> size</span>
+          <span><kbd>Alt</kbd>+arrows nudge</span>
+          <span><kbd>Alt</kbd><kbd>S</kbd> shape</span>
+          <span><kbd>Alt</kbd><kbd>X</kbd> pixel-perfect</span>
+          <span><kbd>Alt</kbd><kbd>B</kbd> bold text</span>
+          <span><kbd>Alt</kbd><kbd>L</kbd> guide</span>
+          <span><kbd>Alt</kbd><kbd>T</kbd> strip</span>
+          <span><kbd>Alt</kbd><kbd>G</kbd> pick color</span>
+          <span><kbd>Alt</kbd><kbd>C</kbd> copy text</span>
+          <span><kbd>Alt</kbd><kbd>V</kbd> read aloud</span>
+          <span><kbd>Alt⇧V</kbd> pause reading</span>
+          <span><kbd>Alt</kbd><kbd>J</kbd>/<kbd>K</kbd> prev/next sentence</span>
+          <span><kbd>Alt</kbd><kbd>P</kbd> pin</span>
+          <span><kbd>Alt</kbd><kbd>R</kbd> recapture</span>
+          <span><kbd>Alt⇧F</kbd> follow mode</span>
+          <span><kbd>Alt⇧D</kbd> lens view</span>
+          <span><kbd>Esc</kbd> close</span>
+        </div>
+      </details>
+      <p class="note">Everything runs locally in your browser — no page content is ever uploaded.</p>
+    </footer>
+  </div>
+
+  <script src="../shared/defaults.js?v=1.3.0"></script>
+  <script src="popup.js?v=1.3.0"></script>
+</body>
+</html>

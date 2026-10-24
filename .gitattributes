@@ -1,0 +1,15 @@
+# Normalise line endings in the repo (LF), keep binaries byte-exact.
+* text=auto
+
+*.js   text eol=lf
+*.mjs  text eol=lf
+*.json text eol=lf
+*.css  text eol=lf
+*.html text eol=lf
+*.md   text eol=lf
+
+*.png  binary
+*.jpg  binary
+*.zip  binary
+*.crx  binary
+*.pem  binary

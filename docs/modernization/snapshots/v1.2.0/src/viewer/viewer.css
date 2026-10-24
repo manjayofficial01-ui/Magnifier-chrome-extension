@@ -1,0 +1,210 @@
+/* Viewer layout — Photo Magnifier. */
+
+body.viewer {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(90% 60% at 80% -10%, rgba(124, 92, 246, 0.14), transparent 60%),
+    radial-gradient(70% 50% at 0% 110%, rgba(34, 211, 238, 0.08), transparent 55%),
+    var(--bg);
+}
+
+/* ---------- top bar ---------- */
+
+.vbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--line);
+  flex: none;
+}
+
+.brand { display: flex; align-items: center; gap: 11px; }
+
+.mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 18px rgba(124, 92, 246, 0.25);
+}
+
+.mark svg { width: 100%; height: 100%; display: block; }
+
+.brand-txt h1 { margin: 0; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+.brand-txt p { margin: 1px 0 0; font-size: 11.5px; color: var(--muted); }
+
+.vbar-actions { display: flex; align-items: center; gap: 9px; }
+
+.vcta { width: auto; padding: 9px 15px; font-size: 13px; }
+
+/* ---------- stage ---------- */
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.stage.panning { cursor: grabbing; }
+.stage.dragover { outline: 2px dashed rgba(139, 124, 255, 0.7); outline-offset: -10px; }
+
+#vcanvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* ---------- empty state ---------- */
+
+.empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.drop {
+  width: min(520px, 92%);
+  text-align: center;
+  padding: 38px 34px 30px;
+  border-radius: 20px;
+  border: 1.5px dashed rgba(139, 124, 255, 0.4);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.drop-ico {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(139, 124, 255, 0.35);
+  box-shadow: 0 8px 30px rgba(124, 92, 246, 0.25);
+}
+
+.drop-ico svg { width: 32px; height: 32px; }
+
+.drop h2 { margin: 0 0 4px; font-size: 19px; font-weight: 700; }
+.drop .sub { margin: 0 0 20px; font-size: 13px; color: var(--muted); }
+
+.url-row {
+  display: flex;
+  gap: 8px;
+  max-width: 420px;
+  margin: 0 auto 18px;
+}
+
+.url-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  border-radius: 11px;
+  border: 1px solid var(--line-strong);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text);
+  font-size: 13px;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.url-row input::placeholder { color: var(--muted-2); }
+
+.url-row input:focus {
+  border-color: rgba(139, 124, 255, 0.7);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+}
+
+.url-go { width: auto; padding: 10px 18px; font-size: 13px; }
+
+.hint { margin: 0; font-size: 12px; color: var(--muted); }
+.hint b { color: #c7d2fe; font-weight: 600; }
+
+.err {
+  max-width: 480px;
+  margin: 14px auto 0;
+  color: #fecaca;
+  font-size: 13px;
+  line-height: 1.55;
+  border-color: rgba(248, 113, 113, 0.35);
+  background: rgba(248, 113, 113, 0.08);
+}
+
+/* ---------- floating panel ---------- */
+
+.panel {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 250px;
+  background: var(--glass);
+  border: 1px solid var(--line-strong);
+  box-shadow: var(--shadow-lg);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  z-index: 5;
+}
+
+.ptips {
+  display: grid;
+  gap: 5px;
+  margin-top: 11px;
+  padding-top: 11px;
+  border-top: 1px solid var(--line);
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+/* ---------- zoom bar ---------- */
+
+.zoombar {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 5px;
+  border-radius: 999px;
+  background: var(--glass);
+  border: 1px solid var(--line-strong);
+  box-shadow: var(--shadow-lg);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  z-index: 5;
+}
+
+.zoombar button {
+  all: unset;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: #c9d1e8;
+  font-family: var(--font);
+  font-size: 12.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.zoombar button:hover { background: rgba(255, 255, 255, 0.09); color: #fff; }
+.zoombar button:active { transform: scale(0.92); }
+/* `all: unset` strips the UA focus ring — WCAG 2.4.7 needs an explicit one. */
+.zoombar button:focus-visible { outline: 2px solid #8b9cf9; outline-offset: 2px; }
+.zoombar button svg { width: 15px; height: 15px; }
+.zoombar #zPct { min-width: 56px; color: #edeffb; }
+.zoombar .sep { width: 1px; height: 18px; background: rgba(255, 255, 255, 0.14); margin: 0 4px; }

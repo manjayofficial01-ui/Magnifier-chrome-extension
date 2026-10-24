@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Lens test harness</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #111; }
+  #fake { display: block; width: 100vw; height: 100vh; }
+</style>
+</head>
+<body>
+<img id="fake" alt="" />
+
+<script>
+/* ---- chrome stub (so the content script runs on a plain page) ---- */
+window.__frameDataURL = null;
+window.chrome = {
+  runtime: {
+    onMessage: { addListener() {} },
+    getURL: (p) => p,
+    sendMessage: async (msg) => {
+      if (msg && msg.type === 'lumina:capture') return { ok: true, dataUrl: window.__frameDataURL };
+      if (msg && msg.type === 'lumina:state') return { ok: true };
+      return { ok: true };
+    }
+  },
+  storage: {
+    sync: {
+      get: async () => ({}),
+      set: async () => {}
+    }
+  }
+};
+</script>
+
+<script>
+/* ---- paint a fake "screenshot" of a webpage, show it, and hand it to the stub ---- */
+(function buildFakePage() {
+  const W = 1440, H = 900;
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const x = c.getContext('2d');
+
+  x.fillStyle = '#f6f7fb';
+  x.fillRect(0, 0, W, H);
+
+  x.fillStyle = '#5560e8';
+  x.beginPath();
+  x.roundRect ? x.roundRect(80, 70, 260, 30, 15) : x.rect(80, 70, 260, 30);
+  x.fill();
+  x.fillStyle = '#fff';
+  x.font = '600 13px Arial';
+  x.fillText('LUMINA TEST PAGE', 104, 90);
+
+  x.fillStyle = '#1a2033';
+  x.font = '700 34px Arial';
+  x.fillText('Magnifier verification harness', 80, 150);
+  x.fillStyle = '#5b6478';
+  x.font = '15px Arial';
+  x.fillText('The lens should magnify exactly this content — text stays crisp and aligned.', 80, 180);
+
+  // columns of tiny text
+  const lines = [
+    'The quick brown fox jumps over the lazy dog. Pack my box with',
+    'five dozen liquor jugs. Sphinx of black quartz, judge my vow.',
+    'How vexingly quick daft zebras jump! Bright vixens jump; dozy',
+    'fowl quack. Quick zephyrs blow, vexing daft Jim. Two driven',
+    'jocks help fax my big quiz. Five quacking zephyrs jolt my wax',
+    'bed. The five boxing wizards jump quickly over the lazy dog.'
+  ];
+  const tinyText = (tx, ty, size, color, lh) => {
+    x.fillStyle = color;
+    x.font = size + 'px Arial';
+    lines.forEach((ln, i) => x.fillText(ln, tx, ty + i * lh));
+  };
+  tinyText(80, 240, 10, '#333c52', 15);
+  tinyText(740, 240, 7.5, '#454e66', 11);
+
+  // receipt card
+  x.fillStyle = '#fffdf7';
+  x.fillRect(80, 360, 340, 240);
+  x.strokeStyle = '#e5dcc3';
+  x.strokeRect(80, 360, 340, 240);
+  x.fillStyle = '#4a4335';
+  x.font = '700 12px Arial';
+  x.fillText('SUNRISE CAFE', 170, 392);
+  x.font = '9px Arial';
+  const rows = [['2x Flat white', '7.60'], ['1x Almond croissant', '4.25'], ['1x Orange juice 300ml', '3.90'], ['Oat milk substitute', '0.60'], ['Table 12 - Order #4471', ''], ['TOTAL', '16.35']];
+  rows.forEach((r, i) => {
+    x.fillText(r[0], 104, 424 + i * 22);
+    x.fillText(r[1], 360, 424 + i * 22);
+  });
+  x.fillStyle = '#8a815f';
+  x.font = '7px Arial';
+  x.fillText('Card **** 8841 - Auth X7Q92 - 2026-10-09 08:41 - Points: 214', 104, 570);
+
+  // dark "photo" with tiny label text
+  const grad = x.createLinearGradient(740, 360, 1180, 600);
+  grad.addColorStop(0, '#2a3350');
+  grad.addColorStop(1, '#141826');
+  x.fillStyle = grad;
+  x.fillRect(740, 360, 440, 240);
+  x.strokeStyle = '#8892f0';
+  x.lineWidth = 3;
+  x.beginPath();
+  x.arc(810, 430, 34, 0, Math.PI * 2);
+  x.stroke();
+  x.fillStyle = '#c7d2fe';
+  x.font = '700 18px Arial';
+  x.fillText('LUMI', 782, 437);
+  x.fillStyle = '#f0f4ff';
+  x.font = '700 7px Arial';
+  x.fillText('LOREM MAGNETIC FORUMSLOTN — ULTRA VORTAG 250ml', 860, 420);
+  x.fillStyle = '#a9b1cb';
+  x.font = '6px Arial';
+  x.fillText('Serial: 92-MV-4410-XQ - Batch LM-250-XQN7 - Use only with supervision', 860, 438);
+  x.fillText('Store below 25C - Net weight 250ml - Not intended for under-3 years', 860, 452);
+
+  window.__frameDataURL = c.toDataURL('image/png');
+  const img = document.getElementById('fake');
+  img.src = window.__frameDataURL;
+})();
+</script>
+
+<script src="../src/shared/defaults.js?v=1.2.0"></script>
+<script src="../src/content/magnifier.js?v=1.2.0"></script>
+
+<script>
+(async () => {
+  const q = new URLSearchParams(location.search);
+  const api = window.__luminaMagnifier;
+
+  await api.start();
+
+  const settings = {};
+  if (q.get('shape')) settings.shape = q.get('shape');
+  if (q.get('zoom')) settings.zoom = +q.get('zoom');
+  if (q.get('size')) settings.lensSize = +q.get('size');
+  if (q.get('invert') === '1') settings.invert = true;
+  if (q.get('gray') === '1') settings.grayscale = true;
+  if (q.get('crosshair') === '1') settings.crosshair = true;
+  if (q.get('sharpen')) settings.sharpen = +q.get('sharpen');
+  if (Object.keys(settings).length) api.applySettings(settings);
+
+  const px = q.has('x') ? +q.get('x') : Math.round(innerWidth * 0.62);
+  const py = q.has('y') ? +q.get('y') : Math.round(innerHeight * 0.42);
+  api.setPointer(px, py);
+  window.__harnessReady = true;
+})();
+</script>
+</body>
+</html>

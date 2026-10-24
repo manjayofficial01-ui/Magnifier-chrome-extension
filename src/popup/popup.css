@@ -1,0 +1,480 @@
+/* Popup layout — Lumina Magnifier. */
+
+body { width: 360px; }
+
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 16px 18px;
+  min-height: 100vh;
+  background:
+    radial-gradient(130% 70% at 88% -12%, rgba(124, 92, 246, 0.2), transparent 60%),
+    radial-gradient(110% 60% at -8% 108%, rgba(34, 211, 238, 0.1), transparent 55%),
+    var(--bg);
+}
+
+/* ---------- header ---------- */
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+
+.mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  padding: 5px;
+  flex: none;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 18px rgba(124, 92, 246, 0.25);
+}
+
+.mark svg { width: 100%; height: 100%; display: block; }
+
+.brand-txt h1 {
+  margin: 0;
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.brand-txt p {
+  margin: 1px 0 0;
+  font-size: 11.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ---------- power switch ---------- */
+
+.switch input { display: none; }
+
+.switch .track {
+  display: block;
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  flex: none;
+}
+
+.switch .knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #e7eaf6;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.switch input:checked + .track {
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  border-color: transparent;
+  box-shadow: 0 0 0 1px rgba(139, 124, 255, 0.35), 0 4px 18px rgba(124, 92, 246, 0.45);
+}
+
+.switch input:checked + .track .knob { left: 22px; background: #fff; }
+
+/* ---------- status ---------- */
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--muted);
+  padding: 0 2px;
+  min-height: 18px;
+}
+
+.status .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #566078;
+  flex: none;
+  transition: all 0.2s ease;
+}
+
+.status.on .dot {
+  background: var(--ok);
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.8);
+}
+
+.status.on .status-txt { color: #a7f3d0; }
+
+.status.err .dot { background: var(--err); box-shadow: 0 0 8px rgba(248, 113, 113, 0.8); }
+.status.err .status-txt { color: #fecaca; }
+
+/* ---------- shapes ---------- */
+
+.shapes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.shape {
+  padding: 10px 4px 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  color: #b9c1d9;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.18s ease;
+}
+
+.shape svg { width: 22px; height: 22px; }
+
+.shape:hover {
+  background: var(--panel-hover);
+  color: #e7eaf6;
+  transform: translateY(-1px);
+}
+
+.shape.on {
+  color: #fff;
+  border-color: transparent;
+  background:
+    linear-gradient(rgba(20, 22, 36, 0.2), rgba(20, 22, 36, 0.2)) padding-box,
+    var(--grad) border-box;
+  border: 1px solid transparent;
+  box-shadow: 0 4px 16px rgba(124, 92, 246, 0.28);
+}
+
+.toggles {
+  display: flex;
+  gap: 7px;
+  margin-top: 9px;
+  flex-wrap: wrap;
+}
+
+/* ---------- typed numeric input ---------- */
+
+.inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.inline .unit {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+input[type="number"] {
+  width: 58px;
+  padding: 4px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: rgba(0, 0, 0, 0.32);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 12.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="number"]:hover { border-color: rgba(255, 255, 255, 0.24); }
+
+input[type="number"]:focus {
+  border-color: rgba(139, 124, 255, 0.7);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+}
+
+/* Chrome draws spinner arrows inside the box; they crowd a 58px field. */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; }
+
+.size-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+  margin-top: 10px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11.5px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.field .inline.wide { flex: none; }
+
+.hint-s {
+  margin: 8px 0 0;
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: var(--muted-2);
+}
+
+.hint-s b { color: #c7d2fe; font-weight: 700; }
+
+/* ---------- segmented control (lens view / follow) ---------- */
+
+.seg {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 11px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--line);
+}
+
+.seg button {
+  all: unset;
+  padding: 6px 4px;
+  border-radius: 8px;
+  text-align: center;
+  font-family: var(--font);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.seg button:hover { background: rgba(255, 255, 255, 0.06); color: #e7eaf6; }
+
+.seg button.on {
+  color: #fff;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  box-shadow: 0 2px 10px rgba(124, 92, 246, 0.4);
+}
+
+.seg button:focus-visible { outline: 2px solid #8b9cf9; outline-offset: 2px; }
+
+/* ---------- reading presets ---------- */
+
+.presets { margin-top: 0; }
+
+.chip.preset {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px 4px 4px;
+}
+
+.chip.preset .sw {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  flex: none;
+}
+
+/* ---------- collapsible sections ----------
+   The popup is height-capped by Chrome (~600px) and now carries far more controls than
+   fit. Collapsing the rarely-touched groups keeps Zoom and the reading aids reachable
+   without scrolling past sliders nobody changed. */
+
+.sec {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.sec > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 14px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  transition: background 0.15s ease;
+}
+
+.sec > summary::-webkit-details-marker { display: none; }
+.sec > summary:hover { background: rgba(255, 255, 255, 0.04); }
+.sec > summary:focus-visible { outline: 2px solid #8b9cf9; outline-offset: -2px; }
+
+/* Chevron, drawn so it needs no icon font. */
+.sec > summary::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: none;
+  margin-left: 4px;
+  border-right: 1.6px solid var(--muted);
+  border-bottom: 1.6px solid var(--muted);
+  transform: rotate(45deg) translate(-2px, -2px);
+  transition: transform 0.2s ease;
+}
+
+.sec[open] > summary::after { transform: rotate(225deg) translate(-1px, -1px); }
+
+.sum-val {
+  margin-left: auto;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sec-body { padding: 2px 14px 14px; }
+.sec-body > .row-head:first-child { margin-top: 0; }
+
+/* Nested fine-tune block inside a section. */
+.fine {
+  margin-top: 11px;
+  padding-top: 9px;
+  border-top: 1px solid var(--line);
+}
+
+.fine > summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 2px 0 6px;
+  user-select: none;
+}
+
+.fine > summary::-webkit-details-marker { display: none; }
+.fine > summary:focus-visible { outline: 2px solid #8b9cf9; outline-offset: 2px; border-radius: 4px; }
+
+.fine > summary::after {
+  content: " +";
+  color: var(--muted);
+  font-weight: 700;
+}
+.fine[open] > summary::after { content: " −"; }
+
+.mt { margin-top: 14px; }
+
+/* ---------- per-site row ---------- */
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  color: #b9c1d9;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.check input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  border: 1px solid var(--line-strong);
+  background: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  flex: none;
+  position: relative;
+  transition: all 0.15s ease;
+}
+
+.check input:checked {
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  border-color: transparent;
+}
+
+.check input:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1.5px;
+  width: 5px;
+  height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(42deg);
+}
+
+.check input:focus-visible { outline: 2px solid #8b9cf9; outline-offset: 2px; }
+
+.site-reset {
+  display: block;
+  margin: 8px 0 0 auto;
+  font-size: 11px;
+}
+
+/* `.mini` and `.site-reset` set `display` in author CSS, which beats the UA sheet's
+   `[hidden] { display: none }`. Without this the "Reset this site" button stayed
+   visible even when per-site memory was off. */
+.mini[hidden],
+.site-reset[hidden] { display: none !important; }
+
+/* ---------- keyboard list inside a section ---------- */
+
+.keys-sec { background: transparent; border-color: transparent; }
+.keys-sec > summary { padding: 8px 2px; }
+.keys-sec .keys { margin-top: 2px; }
+
+/* ---------- footer ---------- */
+
+.foot {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin-top: 2px;
+}
+
+.keys {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 10px;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.keys span { display: flex; align-items: center; gap: 4px; }
+
+.note {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted-2);
+}

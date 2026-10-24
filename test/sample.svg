@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#33405f"/>
+      <stop offset="1" stop-color="#161a2a"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="600" fill="url(#bg)"/>
+  <circle cx="200" cy="220" r="95" fill="none" stroke="#8892f0" stroke-width="9" opacity="0.9"/>
+  <text x="200" y="238" fill="#c7d2fe" font-family="Arial" font-size="46" font-weight="bold" text-anchor="middle">LUMI</text>
+  <text x="330" y="150" fill="#f0f4ff" font-family="Arial" font-size="19" font-weight="bold">LOREM MAGNETIC FORUMSLOTN — ULTRA VORTAG 250ml</text>
+  <text x="330" y="185" fill="#a9b1cb" font-family="Arial" font-size="14">Serial: 92-MV-4410-XQ — Batch LM-250-XQN7 — Recipient: Lumina Labs, Floor 4</text>
+  <text x="330" y="212" fill="#a9b1cb" font-family="Arial" font-size="14">Use only with supervision of a qualified optician. Not intended for under-3 years.</text>
+  <text x="330" y="239" fill="#a9b1cb" font-family="Arial" font-size="14">Store below 25°C. Net weight 250ml. Part no. LM-250-XQN7 — dead serial only.</text>
+  <text x="330" y="272" fill="#6e7695" font-family="Arial" font-size="12">Sample label image for zoom testing — the fine print is meant to be hard to read at 100%.</text>
+  <rect x="60" y="380" width="780" height="160" rx="14" fill="#ffffff" opacity="0.06"/>
+  <text x="90" y="425" fill="#e7ecff" font-family="Arial" font-size="17" font-weight="bold">INSTRUCTIONS</text>
+  <text x="90" y="452" fill="#aeb6d2" font-family="Arial" font-size="12.5">1. Shake well before use. 2. Point the lens at unreadable text. 3. Adjust zoom with Alt + scroll wheel.</text>
+  <text x="90" y="476" fill="#aeb6d2" font-family="Arial" font-size="12.5">4. Choose circle, square, rounded or wide shape. 5. Boost contrast when text is faint. 6. Pin the lens to read hands-free.</text>
+  <text x="90" y="500" fill="#8a92b2" font-family="Arial" font-size="12.5">Expiry date: 2028-06-30 · GTIN 0614141 23456 7 · Made in Region 9 · QA stamp: L-4410/XQ</text>
+</svg>

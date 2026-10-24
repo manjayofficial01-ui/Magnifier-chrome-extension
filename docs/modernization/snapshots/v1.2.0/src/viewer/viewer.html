@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Photo Magnifier — Lumina</title>
+  <link rel="stylesheet" href="../shared/theme.css" />
+  <link rel="stylesheet" href="viewer.css" />
+</head>
+<body class="viewer">
+  <header class="vbar">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none">
+          <defs>
+            <linearGradient id="vg" x1="8" y1="6" x2="40" y2="42" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#8B9CF9" />
+              <stop offset="0.55" stop-color="#C084FC" />
+              <stop offset="1" stop-color="#67E8F9" />
+            </linearGradient>
+            <radialGradient id="vgg" cx="0.35" cy="0.3" r="0.9">
+              <stop stop-color="#818CF8" stop-opacity="0.35" />
+              <stop offset="1" stop-color="#0C0F1C" stop-opacity="0.9" />
+            </radialGradient>
+          </defs>
+          <circle cx="21" cy="21" r="13" fill="url(#vgg)" stroke="url(#vg)" stroke-width="3.4" />
+          <path d="M31 31 L41 41" stroke="url(#vg)" stroke-width="4.6" stroke-linecap="round" />
+          <path d="M13.5 15.5 A 9.5 9.5 0 0 1 21 11.5" stroke="#fff" stroke-opacity="0.75" stroke-width="2.2" stroke-linecap="round" />
+        </svg>
+      </span>
+      <div class="brand-txt">
+        <h1>Photo Magnifier</h1>
+        <p>Zoom into any image, pixel by pixel</p>
+      </div>
+    </div>
+    <div class="vbar-actions">
+      <button class="tog" id="vInvert">Invert</button>
+      <button class="tog" id="vGray">Grayscale</button>
+      <button class="tog" id="vPixel" title="Nearest-neighbour scaling — crisp pixels, no smoothing">Pixel-perfect</button>
+      <button class="cta vcta" id="vOpen">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 16V4m0 0l-4 4m4-4l4 4" /><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+        </svg>
+        Open image…
+      </button>
+      <input type="file" id="file" accept="image/*" hidden />
+    </div>
+  </header>
+
+  <main class="stage" id="stage">
+    <canvas id="vcanvas"></canvas>
+
+    <div class="empty" id="empty">
+      <div class="drop" id="drop">
+        <div class="drop-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="5" width="18" height="14" rx="3" />
+            <circle cx="9" cy="10.5" r="1.8" />
+            <path d="M3 16.5l4.8-4.2a1.6 1.6 0 0 1 2.2.06L14 16.2m-2.4-2.4l2.1-1.9a1.6 1.6 0 0 1 2.2.05L21 16.4" />
+          </svg>
+        </div>
+        <h2>Drop an image here</h2>
+        <p class="sub">or paste one from your clipboard</p>
+        <div class="url-row">
+          <input id="url" type="url" placeholder="Paste an image URL…" spellcheck="false" />
+          <button class="cta url-go" id="loadUrl">Load</button>
+        </div>
+        <p class="hint">Tip: on any web page, right-click an image and choose <b>“Magnify this image”</b>.</p>
+      </div>
+      <div class="err card" id="err" hidden></div>
+    </div>
+
+    <aside class="panel card" id="panel">
+      <div class="row-head">
+        <span class="lbl">Enhance</span>
+        <button class="mini" id="vReset">Reset</button>
+      </div>
+      <div class="slider-row">
+        <label class="mini-lbl" for="vBrightness">Bright</label>
+        <input type="range" id="vBrightness" min="60" max="160" step="5" />
+        <span class="val-s" id="vBrightnessVal">100</span>
+      </div>
+      <div class="slider-row">
+        <label class="mini-lbl" for="vContrast">Contrast</label>
+        <input type="range" id="vContrast" min="60" max="160" step="5" />
+        <span class="val-s" id="vContrastVal">100</span>
+      </div>
+      <div class="slider-row">
+        <label class="mini-lbl" for="vSaturation">Color</label>
+        <input type="range" id="vSaturation" min="60" max="160" step="5" />
+        <span class="val-s" id="vSaturationVal">100</span>
+      </div>
+      <div class="slider-row">
+        <label class="mini-lbl" for="vSharpen">Sharpen</label>
+        <input type="range" id="vSharpen" min="0" max="100" step="5" />
+        <span class="val-s" id="vSharpenVal">0</span>
+      </div>
+      <div class="ptips">
+        <span><kbd>Wheel</kbd> zoom at cursor</span>
+        <span><kbd>Drag</kbd> pan</span>
+        <span><kbd>Double-click</kbd> zoom in / out</span>
+        <span><kbd>+</kbd><kbd>−</kbd><kbd>0</kbd> zoom keys</span>
+      </div>
+    </aside>
+
+    <div class="zoombar" id="zoombar" hidden>
+      <button id="zOut" title="Zoom out (−)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 12h12"/></svg></button>
+      <button id="zPct" title="Reset to 100%">100%</button>
+      <button id="zIn" title="Zoom in (+)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 6v12M6 12h12"/></svg></button>
+      <i class="sep"></i>
+      <button id="zFit">Fit</button>
+    </div>
+  </main>
+
+  <script src="../shared/defaults.js?v=1.2.0"></script>
+  <script src="viewer.js?v=1.2.0"></script>
+</body>
+</html>
